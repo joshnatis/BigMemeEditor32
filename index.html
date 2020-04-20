@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>Memes</title>
+	<link rel="stylesheet" href="styles.css">
+	<script src="scripts.js"></script>
+</head>
+
+<body>
+	<div id="main">
+		<a onclick="upload(displayUploadedImage)"><div id="upload-image-placeholder">
+			<br><br><br><br>
+			<p id="upload-instructions">Click me to upload an image!</p>
+			<input id="upload-button" type="file" accept="image/*" name="image" id="file">
+		</div></a>
+
+		<div id="image-holder">
+			<canvas id="user-image-overlay"></canvas>
+			<img id="user-image" alt="user uploaded image">
+		</div>
+
+		<div id="caption-holder">
+			<textarea placeholder="Top Text" class="caption-text" id="top-text"></textarea>
+			<textarea placeholder="Bottom Text" class="caption-text" id="bottom-text"></textarea>
+		</div>
+	</div>
+</body>

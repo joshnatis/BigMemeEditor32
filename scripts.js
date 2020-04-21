@@ -14,8 +14,8 @@ function displayUploadedImage(file) {
 		selectedFile = file;
 
 	let img = document.getElementById("user-image");
-    img.src = URL.createObjectURL(selectedFile);
-    img.style.display = "block";
+	img.src = URL.createObjectURL(selectedFile);
+	img.style.display = "block";
 
 	document.getElementById("upload-image-placeholder").style.display = "none";
 	
@@ -115,28 +115,28 @@ window.addEventListener("paste", async function(e) {
 
 //todo; \n doesn't reset width, account for that
 function getWrapped(ctx, text, maxWidth) {
-    var words = text.split(" ");
-    var lines = [];
-    var currentLine = words[0];
+	var words = text.split(" ");
+	var lines = [];
+	var currentLine = words[0];
 
-    for (var i = 1; i < words.length; i++) {
-        var word = words[i];
-        var width = ctx.measureText(currentLine + " " + word).width;
-        if (width < maxWidth) {
-            currentLine += " " + word;
-        } else {
-            lines.push(currentLine);
-            currentLine = word;
-        }
-    }
-    lines.push(currentLine);
+	for (var i = 1; i < words.length; i++) {
+		var word = words[i];
+		var width = ctx.measureText(currentLine + " " + word).width;
+		if (width < maxWidth) {
+			currentLine += " " + word;
+	        } else {
+			lines.push(currentLine);
+			currentLine = word;
+		}
+	}
+	lines.push(currentLine);
 
-    let wrapped = "";
-    for(var i = 0; i < lines.length; i++)
-    {
-    	if(i > 0) wrapped += "\n";
-    	wrapped += lines[i];
-    }
+	let wrapped = "";
+	for(var i = 0; i < lines.length; i++)
+	{
+		if(i > 0) wrapped += "\n";
+		wrapped += lines[i];
+	}
 
-    return wrapped;
+	return wrapped;
 }

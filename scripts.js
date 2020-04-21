@@ -1,15 +1,14 @@
-let uploaded = false;
+let paste = false;
 
 function upload() {
 	document.getElementById("upload-button").addEventListener("change", displayUploadedImage, false);
 	document.getElementById('upload-button').click();
 }
 
-function displayUploadedImage(file="")
-{
+function displayUploadedImage(file) {
 	let selectedFile;
 
-	if(file == "")
+	if(!paste)
 		selectedFile = document.getElementById('upload-button').files[0];
 	else
 		selectedFile = file;
@@ -29,7 +28,9 @@ function displayUploadedImage(file="")
 		canvas.style.left = img.getBoundingClientRect().left + "px";
 		canvas.style.height = img.clientHeight + "px";
 		canvas.style.width = img.clientWidth + "px";
-		uploaded = true;
+		fix_dpi(canvas);
+		var ctx = canvas.getContext("2d");
+		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 	};
 
 	document.getElementById("top-text").addEventListener('input', function (evt) {
@@ -56,30 +57,7 @@ function fix_dpi(canvas) {
 	return canvas;
 }
 
-// function createText(text, isTop)
-// {
-// 	let canvas = document.getElementById("user-image-overlay");
-
-// 	let ypos;
-// 	if(isTop) ypos = 30;
-// 	else ypos = canvas.height - 30;
-
-// 	alert(ypos);
-
-// 	var ctx = canvas.getContext("2d");
-// 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-// 	let toptext = document.getElementById("top-text").value;
-// 	let bottomtext = document.getElementById("bottom-text").value;
-
-// 	ctx.font = "30px Impact";
-// 	ctx.fillStyle = 'white';
-// 	ctx.fillText(text, 0, ypos);
-// 	ctx.lineWidth = 2;
-// 	ctx.strokeText(text, 0, ypos);
-// }
-
-function createText2()
-{
+function createText2() {
 	let canvas = document.getElementById("user-image-overlay");
 	fix_dpi(canvas);
 
@@ -91,38 +69,74 @@ function createText2()
 	let img = document.getElementById("user-image");
 	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-	ctx.font = "50px Impact";
+	let fontsize = Math.floor((canvas.width + canvas.height) / 18);
+	ctx.font = fontsize + "px Impact";
 	ctx.fillStyle = 'white';
 	ctx.lineWidth = 2;
 
 
-	let toptext = document.getElementById("top-text").value;
-	let bottomtext = document.getElementById("bottom-text").value;
+	// let toptext = document.getElementById("top-text").value;
+	// let bottomtext = document.getElementById("bottom-text").value;
+	let toptext = getWrapped(ctx, document.getElementById("top-text").value, canvas.width);
+	let bottomtext = getWrapped(ctx, document.getElementById("bottom-text").value, canvas.width);
 
-	var lineheight = 50;
-	var lines = toptext.split('\n');
+	let lines = toptext.split('\n');
 
 	for (var i = 0; i<lines.length; i++)
 	{
-		ctx.fillText(lines[i], canvas.width/2, 50 + (i * lineheight));
-		ctx.strokeText(lines[i], canvas.width/2, 50 + (i * lineheight));
+		ctx.fillText(lines[i], canvas.width/2, fontsize + (i * fontsize));
+		ctx.strokeText(lines[i], canvas.width/2, fontsize + (i * fontsize));
 	}
 
 	lines = bottomtext.split('\n');
 
 	for (var i = 0; i<lines.length; i++)
 	{
-		ctx.fillText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - 5 - (i * lineheight));
-		ctx.strokeText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - 5 - (i * lineheight));
+		ctx.fillText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - 12 - (i * fontsize));
+		ctx.strokeText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - 12 - (i * fontsize));
 	}
 }
 
 window.addEventListener("paste", async function(e) {
-	e.preventDefault();
-	e.stopPropagation();
-	if(e.clipboardData.items[0].type.indexOf("image") === 0)
+	for(let i = 0; i < e.clipboardData.items.length; ++i)
 	{
-		let file = e.clipboardData.items[0].getAsFile();
-		displayUploadedImage(file);
+		if(e.clipboardData.items[i].type.indexOf("image") === 0)
+		{
+			e.preventDefault();
+			e.stopPropagation();
+
+			paste = true;
+			let file = e.clipboardData.items[i].getAsFile();
+			displayUploadedImage(file);
+			break;
+		}
 	}
 });
+
+//todo; \n doesn't reset width, account for that
+function getWrapped(ctx, text, maxWidth) {
+    var words = text.split(" ");
+    var lines = [];
+    var currentLine = words[0];
+
+    for (var i = 1; i < words.length; i++) {
+        var word = words[i];
+        var width = ctx.measureText(currentLine + " " + word).width;
+        if (width < maxWidth) {
+            currentLine += " " + word;
+        } else {
+            lines.push(currentLine);
+            currentLine = word;
+        }
+    }
+    lines.push(currentLine);
+
+    let wrapped = "";
+    for(var i = 0; i < lines.length; i++)
+    {
+    	if(i > 0) wrapped += "\n";
+    	wrapped += lines[i];
+    }
+
+    return wrapped;
+}

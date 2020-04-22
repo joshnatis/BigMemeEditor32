@@ -70,7 +70,7 @@ function createText2() {
 	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
 	let fontsize = Math.floor((canvas.width + canvas.height) / 18);
-	ctx.font = fontsize + "px Impact, Arial Black, sans-serif";
+	ctx.font = fontsize + "px Impact, Anton, sans-serif";
 	ctx.fillStyle = 'white';
 	ctx.lineWidth = 2;
 

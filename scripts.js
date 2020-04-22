@@ -37,6 +37,8 @@ function displayUploadedImage(file) {
 		var ctx = canvas.getContext("2d");
 		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
+		img.style.display="none";
+
 		let btn = document.getElementById('dl-btn');
 		btn.addEventListener('click', function (e) {
     		btn.href = canvas.toDataURL('image/jpg');
@@ -114,10 +116,13 @@ function getWrapped(ctx, text, maxWidth) {
 
 	for (var i = 1; i < words.length; i++) {
 		var word = words[i];
+
 		var width = ctx.measureText(currentLine + " " + word).width;
+
 		if (width < maxWidth) {
 			currentLine += " " + word;
-	        } else {
+		}
+		else {
 			lines.push(currentLine);
 			currentLine = word;
 		}

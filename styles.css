@@ -68,7 +68,7 @@
     border-style: solid;
     resize: none;
 
-    font: 16px helvetica,arial;
+    font: 16px helvetica,arial,sans-serif;
     line-height: normal;
 }
 

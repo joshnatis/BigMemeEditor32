@@ -83,6 +83,11 @@
     line-height: normal;
 }
 
+.caption-text:hover
+{
+	transform: scale(1.01);
+}
+
 #caption-holder
 {
 	float: right;
@@ -95,7 +100,7 @@
 	width: 50%;
 }
 
-#dl-btn
+.btn
 {
 	border: 1px solid black;
 	border-radius: 5px;
@@ -109,12 +114,24 @@
   	font-family: "helvetica", "arial", sans-serif;
 }
 
+.btn:hover
+{
+	background-color: rgba(20, 20, 20, 0.4);
+}
+
+#ul-btn
+{
+	margin-right: 1em;
+}
+
 @media screen and (max-width: 1080px) {
 	#caption-holder { width: 45%; display: block; margin-left: auto; margin-right: auto; padding: 1em;}
 	#user-image { float: none; }
 	#upload-image-placeholder { width: 100%; height: 70%; }
 	#caption-holder { width: 50%; float: left;}
-	#dl-btn { float: none; display: block; margin-left: auto; margin-right: auto; width: 6em;}
+	.btn { float: none; display: block; margin-left: auto; margin-right: auto; width: auto;}
+	#ul-btn {display: inline-block; margin-right: 0; }
+	#dl-btn { display: inline-block; margin-right: 1em; margin-bottom: 1em;}
 	#main { width: 90%; height: 40em; }
 	#megusta { display: none; }
 
@@ -126,5 +143,5 @@
 	#image-holder { width: 100%; max-width: 100%; }
 	#caption-holder { width: 85%; display: block; margin-left: auto; margin-right: auto; padding: 1em;}
 	#user-image { max-height: 80%; }
-	#dl-btn { float: none; display: block; margin-left: auto; margin-right: auto; width: 40%;}
+	.btn { float: none; display: block; margin-left: auto; margin-right: auto; width: auto;}
 }

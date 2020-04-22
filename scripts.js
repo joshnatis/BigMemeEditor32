@@ -29,6 +29,7 @@ function displayUploadedImage(file) {
 
 	img.onload = function() {
 		document.getElementById("dl-btn").style.display = "inline-block";
+		document.getElementById("ul-btn").style.display = "inline-block";
 		canvas.style.left = img.getBoundingClientRect().left + "px";
 		canvas.style.height = img.clientHeight + "px";
 		canvas.style.width = img.clientWidth + "px";

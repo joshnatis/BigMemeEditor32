@@ -11,7 +11,10 @@ function displayUploadedImage(file) {
 	if(!paste)
 		selectedFile = document.getElementById('upload-button').files[0];
 	else
+	{
 		selectedFile = file;
+		paste = false;
+	}
 
 	let img = document.getElementById("user-image");
 	img.src = URL.createObjectURL(selectedFile);
@@ -25,12 +28,18 @@ function displayUploadedImage(file) {
 	let canvas = document.getElementById("user-image-overlay");
 
 	img.onload = function() {
+		document.getElementById("dl-btn").style.display = "inline-block";
 		canvas.style.left = img.getBoundingClientRect().left + "px";
 		canvas.style.height = img.clientHeight + "px";
 		canvas.style.width = img.clientWidth + "px";
 		fix_dpi(canvas);
 		var ctx = canvas.getContext("2d");
 		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+		let btn = document.getElementById('dl-btn');
+		btn.addEventListener('click', function (e) {
+    		btn.href = canvas.toDataURL('image/jpg');
+		});
 	};
 
 	document.getElementById("top-text").addEventListener('input', function (evt) {
@@ -74,9 +83,6 @@ function createText2() {
 	ctx.fillStyle = 'white';
 	ctx.lineWidth = 2;
 
-
-	// let toptext = document.getElementById("top-text").value;
-	// let bottomtext = document.getElementById("bottom-text").value;
 	let toptext = getWrapped(ctx, document.getElementById("top-text").value, canvas.width);
 	let bottomtext = getWrapped(ctx, document.getElementById("bottom-text").value, canvas.width);
 
@@ -95,23 +101,9 @@ function createText2() {
 		ctx.fillText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - fontsize/3 - (i * fontsize));
 		ctx.strokeText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - fontsize/3 - (i * fontsize));
 	}
+
+	// var dataURL = canvas.toDataURL();
 }
-
-window.addEventListener("paste", async function(e) {
-	for(let i = 0; i < e.clipboardData.items.length; ++i)
-	{
-		if(e.clipboardData.items[i].type.indexOf("image") === 0)
-		{
-			e.preventDefault();
-			e.stopPropagation();
-
-			paste = true;
-			let file = e.clipboardData.items[i].getAsFile();
-			displayUploadedImage(file);
-			break;
-		}
-	}
-});
 
 //todo; \n doesn't reset width, account for that
 function getWrapped(ctx, text, maxWidth) {
@@ -139,4 +131,64 @@ function getWrapped(ctx, text, maxWidth) {
 	}
 
 	return wrapped;
+}
+
+window.addEventListener("paste", async function(e) {
+	for(let i = 0; i < e.clipboardData.items.length; ++i)
+	{
+		if(e.clipboardData.items[i].type.indexOf("image") === 0)
+		{
+			e.preventDefault();
+			e.stopPropagation();
+
+			paste = true;
+			let file = e.clipboardData.items[i].getAsFile();
+			displayUploadedImage(file);
+			break;
+		}
+	}
+});
+
+function dragondrop()
+{
+	let dropArea = document.getElementById("upload-image-placeholder");
+
+	['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+		dropArea.addEventListener(eventName, 
+			function(eventName) { eventName.preventDefault(); eventName.stopPropagation(); }
+			, false)
+	});
+
+	['dragenter', 'dragover'].forEach(eventName => {
+		dropArea.addEventListener(eventName, highlight, false)
+	});
+
+	['dragleave', 'drop'].forEach(eventName => {
+		dropArea.addEventListener(eventName, unhighlight, false)
+	});
+
+	function highlight(e) {
+		dropArea.style.border = "2px dashed purple";
+	}
+
+	function unhighlight(e) {
+		dropArea.style.border = "2px dashed grey";
+	}
+
+	dropArea.addEventListener('drop', handleFiles, false)
+
+	function handleFiles(e) {
+		let dt = e.dataTransfer;
+		let files = dt.files;
+
+		for(let i = 0; i < files.length; ++i)
+		{
+			if(files[i].type.indexOf("image") === 0)
+			{
+				paste = true;
+				displayUploadedImage(files[i]);
+				break;
+			}
+		}
+	}
 }

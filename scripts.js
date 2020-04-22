@@ -37,7 +37,7 @@ function displayUploadedImage(file) {
 		var ctx = canvas.getContext("2d");
 		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-		img.style.display="none";
+		img.style.visibility="hidden";
 
 		let btn = document.getElementById('dl-btn');
 		btn.addEventListener('click', function (e) {

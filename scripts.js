@@ -92,8 +92,8 @@ function createText2() {
 
 	for (var i = 0; i<lines.length; i++)
 	{
-		ctx.fillText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - 12 - (i * fontsize));
-		ctx.strokeText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - 12 - (i * fontsize));
+		ctx.fillText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - fontsize/3 - (i * fontsize));
+		ctx.strokeText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - fontsize/3 - (i * fontsize));
 	}
 }
 

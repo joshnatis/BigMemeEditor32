@@ -63,7 +63,7 @@
 
 #user-image-overlay
 {
-	border: 3px solid red;
+	border: 3px solid black;
 	vertical-align: top;
 	position: absolute;
 	z-index: 1;
@@ -100,8 +100,14 @@
 	width: 50%;
 }
 
+#reset-btn
+{
+	float: none;
+}
+
 .btn
 {
+	float: right;
 	border: 1px solid black;
 	border-radius: 5px;
 	background-color: rgba(20, 20, 20, 0.2);
@@ -110,7 +116,6 @@
   	text-align: center;
   	text-decoration: none;
   	display: none;
-  	float: right;
   	font-family: "helvetica", "arial", sans-serif;
 }
 
@@ -122,6 +127,47 @@
 #ul-btn
 {
 	margin-right: 1em;
+}
+
+#reset-btn
+{
+	display: none;
+}
+
+.filter-holder
+{
+	background-color: blue;
+	float: right;
+}
+
+.slider_title
+{
+	display: none;
+}
+
+.slider
+{
+	display: none;
+	-webkit-appearance: none;
+	appearance: none;
+	height: 1em;
+	border-radius: 5px;  
+	background: rgba(20,20,20,0.2);
+	outline: none;
+	-webkit-transition: .2s;
+	transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb
+{
+	-webkit-appearance: none;
+	appearance: none;
+	height: 1.75em;
+	width: 1.75em;
+	border-radius: 50%; 
+	background: rgb(255, 192, 203);
+	border: 1px solid rgba(20,20,20,0.5);
+	cursor: pointer;
 }
 
 @media screen and (max-width: 1080px) {

@@ -30,6 +30,8 @@ function displayUploadedImage(file) {
 	img.onload = function() {
 		document.getElementById("dl-btn").style.display = "inline-block";
 		document.getElementById("ul-btn").style.display = "inline-block";
+		document.getElementById("reset-btn").style.display = "inline-block";
+
 		canvas.style.left = img.getBoundingClientRect().left + "px";
 		canvas.style.height = img.clientHeight + "px";
 		canvas.style.width = img.clientWidth + "px";
@@ -39,10 +41,12 @@ function displayUploadedImage(file) {
 
 		img.style.visibility="hidden";
 
-		let btn = document.getElementById('dl-btn');
-		btn.addEventListener('click', function (e) {
-    		btn.href = canvas.toDataURL('image/jpg');
+		let dl_btn = document.getElementById('dl-btn');
+		dl_btn.addEventListener('click', function (e) {
+    		dl_btn.href = canvas.toDataURL('image/jpg');
 		});
+
+		activateFilters();
 	};
 
 	document.getElementById("top-text").addEventListener('input', function (evt) {
@@ -84,10 +88,15 @@ function createText2() {
 	let fontsize = Math.floor((canvas.width + canvas.height) / 18);
 	ctx.font = fontsize + "px Impact, Anton, sans-serif";
 	ctx.fillStyle = 'white';
-	ctx.lineWidth = 2;
+
+	if(window.innerWidth < 800)
+		ctx.lineWidth = 5;
+	else
+		ctx.lineWidth = 2;
 
 	let toptext = getWrapped(ctx, document.getElementById("top-text").value, canvas.width);
 	let bottomtext = getWrapped(ctx, document.getElementById("bottom-text").value, canvas.width);
+	console.log(toptext);
 
 	let lines = toptext.split('\n');
 
@@ -104,8 +113,6 @@ function createText2() {
 		ctx.fillText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - fontsize/3 - (i * fontsize));
 		ctx.strokeText(lines[lines.length - 1 - i], canvas.width/2, canvas.height - fontsize/3 - (i * fontsize));
 	}
-
-	// var dataURL = canvas.toDataURL();
 }
 
 //todo; \n doesn't reset width, account for that
@@ -197,4 +204,70 @@ function dragondrop()
 			}
 		}
 	}
+}
+
+function deepfry()
+{
+	document.getElementById("user-image-overlay").setAttribute("data-caman-hidpi-disabled", "true");
+	Caman("#user-image-overlay", function () {
+			this.saturation(50).contrast(40).exposure(-10).sharpen(100).noise(5).saturation(20).sharpen(40).brightness(-5).render();
+	});
+}
+
+function reset()
+{
+	Caman('#user-image-overlay', function() {
+		this.revert();
+	}); 
+
+	let sliders = document.querySelectorAll(".slider");
+	let titles = document.querySelectorAll(".slider_title");
+		for (let i = 0; i < sliders.length; i++) {
+    		sliders[i].value="0";
+    		let txt = titles[i].innerHTML;
+    		titles[i].innerHTML = txt.substring(0, txt.indexOf("(") + "0");
+		}
+
+	createText2();
+}
+
+function activateFilters() {
+	let titles = document.querySelectorAll(".slider_title");
+	let sliders = document.querySelectorAll(".slider");
+	for (let i = 0; i < titles.length; i++) {
+    	titles[i].style.display="inline-block";
+    	sliders[i].style.display="inline-block";
+	}
+
+	if(window.innerWidth < 800)
+		document.getElementById("main").style.height = "auto";
+
+	document.getElementById("user-image-overlay").setAttribute("data-caman-hidpi-disabled", "true");
+
+	activateFilter("brightness");
+	activateFilter("saturation");
+	activateFilter("sharpen");
+	activateFilter("contrast");
+	activateFilter("noise");
+}
+
+function activateFilter(filter_type) {
+	let title = document.getElementById(filter_type + "_title");
+	let slider = document.getElementById(filter_type + "_slider");
+
+	slider.onchange = function() {
+		let val = this.value;
+  		title.innerHTML =  filter_type + "(" + val + ")";
+  		Caman("#user-image-overlay", function () {
+  			this.reloadCanvasData();
+  			
+  			switch(filter_type) {
+  				case "brightness": this.brightness(val).render(); break;
+  				case "saturation": this.saturation(val).render(); break;
+  				case "sharpen": this.sharpen(val).render(); break;
+  				case "contrast": this.contrast(val).render(); break;
+  				case "noise": this.noise(val).render(); break;
+  			}
+		});
+  	}
 }
